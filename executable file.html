@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watch Store Landing Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('https://source.unsplash.com/1600x900/?watches');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat; /* Prevent background image from repeating */
+            color: white;
+            height: 100vh; /* Make the body cover the entire viewport height */
+            width: 100vw; /* Make the body cover the entire viewport width */
+            overflow: hidden; /* Hide horizontal scrollbar */
+        }
+        .header {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            text-align: center;
+            animation: fadeIn 1s ease-in-out;
+        }
+        .welcome-section {
+            padding: 100px 20px;
+            text-align: center;
+            animation: fadeIn 1s ease-in-out;
+        }
+        .welcome-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .welcome-section p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+        .welcome-section .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #333;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .welcome-section .button:hover {
+            background-color: #555;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* Media queries for responsiveness */
+        @media screen and (max-width: 768px) {
+            .welcome-section {
+                padding: 80px 10px;
+            }
+            .welcome-section h1 {
+                font-size: 2.5em;
+            }
+            .welcome-section p {
+                font-size: 1em;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .welcome-section {
+                padding: 60px 5px;
+            }
+            .welcome-section h1 {
+                font-size: 2em;
+            }
+            .welcome-section p {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>Welcome to Our Watch Store</h1>
+</div>
+
+<section class="welcome-section">
+    <div class="container">
+        <h1>Discover Stylish Watches</h1>
+        <p>Explore our wide range of watches and find the perfect one for you!</p>
+        <a href="index.html" class="button">Discover now -></a>
+    </div>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="paymentApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #007bff;
+        }
+        label {
+            font-weight: bold;
+        }
+        input[type="text"], input[type="email"], input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type="radio"] {
+            margin-right: 5px;
+        }
+        input[type="submit"] {
+            width: 100%;
+            background-color: #007bff;
+            color: #fff;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        .error-message {
+            color: #dc3545;
+            margin-top: 5px;
+        }
+        .success-message {
+            color: #28a745;
+            margin-top: 5px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body ng-app="paymentApp" ng-controller="PaymentController">
+
+<div class="container" ng-controller="PaymentController">
+    <h2>Payment Details</h2>
+    <form ng-submit="submitPayment()" name="paymentForm" novalidate>
+        <div class="form-group">
+            <label for="card_number">Card Number:</label>
+            <input type="text" id="card_number" ng-model="payment.cardNumber" class="form-control" placeholder="Enter your card number" ng-pattern="/^[0-9]{13,16}$/" required>
+            <div class="error-message" ng-show="paymentForm.card_number.$error.required && paymentForm.card_number.$dirty">Card number is required.</div>
+            <div class="error-message" ng-show="paymentForm.card_number.$error.pattern && paymentForm.card_number.$dirty">Card number must be between 13 to 16 digits.</div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="expiry_date">Expiry Date:</label>
+                <input type="date" id="expiry_date" ng-model="payment.expiryDate" class="form-control" placeholder="MM/YYYY" ng-pattern="/^(0[1-9]|1[0-2])\/[0-9]{4}$/" required>
+                <div class="error-message" ng-show="paymentForm.expiry_date.$error.required && paymentForm.expiry_date.$dirty">Expiry date is required.</div>
+                <div class="error-message" ng-show="paymentForm.expiry_date.$error.pattern && paymentForm.expiry_date.$dirty">Expiry date must be in MM/YYYY format.</div>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="cvv">CVV:</label>
+                <input type="text" id="cvv" ng-model="payment.cvv" class="form-control" placeholder="Enter CVV" ng-pattern="/^[0-9]{3,4}$/" required>
+                <div class="error-message" ng-show="paymentForm.cvv.$error.required && paymentForm.cvv.$dirty">CVV is required.</div>
+                <div class="error-message" ng-show="paymentForm.cvv.$error.pattern && paymentForm.cvv.$dirty">CVV must be 3 or 4 digits.</div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="name">Cardholder's Name:</label>
+            <input type="text" id="name" ng-model="payment.cardholderName" class="form-control" placeholder="Enter cardholder's name" required>
+            <div class="error-message" ng-show="paymentForm.name.$error.required && paymentForm.name.$dirty">Cardholder's name is required.</div>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" ng-model="payment.email" class="form-control" placeholder="Enter your email" required>
+            <div class="error-message" ng-show="paymentForm.email.$error.required && paymentForm.email.$dirty">Email is required.</div>
+            <div class="error-message" ng-show="paymentForm.email.$error.email && paymentForm.email.$dirty">Invalid email format.</div>
+        </div>
+
+        <div class="form-group">
+            <label>Mode of Payment:</label><br>
+            <label><input type="radio" ng-model="payment.paymentMode" value="Credit Card" required> Credit Card</label>
+            <label><input type="radio" ng-model="payment.paymentMode" value="Debit Card"> Debit Card</label>
+            <label><input type="radio" ng-model="payment.paymentMode" value="PayPal"> PayPal</label>
+            <div class="error-message" ng-show="paymentForm.paymentMode.$error.required && paymentForm.paymentMode.$dirty">Mode of payment is required.</div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="amount">Amount:</label>
+                <input type="text" id="amount" ng-model="totalAmount" class="form-control" placeholder="Enter amount" required readonly>
+        <!--  validation messages -->
+                <div class="error-message" ng-show="paymentForm.amount.$error.required && paymentForm.amount.$dirty">Amount is required.</div>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="currency">Currency:</label>
+                <select id="currency" ng-model="payment.currency" class="form-control" required>
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="GBP">GBP</option>
+                </select>
+                <div class="error-message" ng-show="paymentForm.currency.$error.required && paymentForm.currency.$dirty">Currency is required.</div>
+            </div>
+        </div>
+
+        <input type="submit" value="Pay Now" class="btn btn-primary btn-block" ng-disabled="paymentForm.$invalid">
+        <div class="error-message" ng-show="paymentForm.$invalid && paymentForm.$dirty">Please fill out all required fields correctly.</div>
+    </form>
+    <div class="success-message" ng-show="paymentSuccess">{{ successMessage }}</div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+<script>
+    var app = angular.module('paymentApp', []);
+    app.controller('PaymentController', function($scope) {
+        $scope.payment = {
+            cardNumber: '',
+            expiryDate: '',
+            cvv: '',
+            cardholderName: '',
+            email: '',
+            paymentMode: '',
+            amount: '',
+            currency: 'USD'
+        };
+
+        $scope.paymentSuccess = false;
+        $scope.successMessage = '';
+
+        $scope.submitPayment = function() {
+            if ($scope.paymentForm.$invalid) {
+                return; // Do not submit if form is invalid
+            }
+            
+            // Simulate payment processing
+            // In real application, you should send this data to server for processing
+            console.log('Submitting payment:', $scope.payment);
+            // Simulating success
+            $scope.paymentSuccess = true;
+            $scope.successMessage = 'Payment successful!';
+            // Reset the form after submission
+            $scope.payment = {
+                cardNumber: '',
+                expiryDate: '',
+                cvv: '',
+                cardholderName: '',
+                email: '',
+                paymentMode: '',
+                amount: '',
+                currency: 'USD'
+            };
+            // Reset form validation state
+            $scope.paymentForm.$setPristine();
+            $scope.paymentForm.$setUntouched();
+        };
+        var app = angular.module('paymentApp', []);
+    app.controller('PaymentController', function($scope, $location) {
+        // Log full URL to check if the total amount is included
+        console.log("try.html?totalAmount=$2030#!/", $location.absUrl());
+        
+        // Get total amount from URL query parameter
+        $scope.totalAmount = $location.search().totalAmount || '';
+        console.log("Total Amount:", $scope.totalAmount);
+
+        });
+    });
+        
+</script>
+
+</body>
+</html>
